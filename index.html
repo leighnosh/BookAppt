@@ -112,7 +112,21 @@ function saveUserData(event) {
   localStorage.setItem('userData', userDataJSON);
 
   alert('User data saved successfully!');
-  console.log(localStorage)
+  console.log(localStorage.getItem('userData'));
+
+  function retrieveUserData() {
+  // Get the JSON string from local storage
+  var userDataJSON = localStorage.getItem('userData');
+
+  // Convert the JSON string back to an object
+  var userData = JSON.parse(userDataJSON);
+
+  return userData;
+}
+
+var userData = retrieveUserData();
+console.log(userData);
+  
 }
 </script>
 

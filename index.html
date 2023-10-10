@@ -89,46 +89,33 @@
 function saveUserData(event) {
   event.preventDefault();
 
-  // Get form values
-  var name = document.getElementById('name').value;
   var email = document.getElementById('email').value;
+
+  // Get existing data or initialize as an empty array if it doesn't exist
+  var existingData = JSON.parse(localStorage.getItem(email)) || [];
+
+  var name = document.getElementById('name').value;
   var phone = document.getElementById('phone').value;
   var date = document.getElementById('date').value;
   var time = document.getElementById('time').value;
 
-  // Create an object to hold the user data
-  var userData = {
+  // Append the new data to the existing array
+  existingData.push({
     name: name,
     email: email,
     phone: phone,
     date: date,
     time: time
-  };
+  });
 
-  // Convert the object to a JSON string
-  var userDataJSON = JSON.stringify(userData);
-
-  // Save the JSON string to local storage
-  localStorage.setItem('userData', userDataJSON);
+  // Save the updated array back to local storage
+  localStorage.setItem(email, JSON.stringify(existingData));
 
   alert('User data saved successfully!');
-  console.log(localStorage.getItem('userData'));
-
-  function retrieveUserData() {
-  // Get the JSON string from local storage
-  var userDataJSON = localStorage.getItem('userData');
-
-  // Convert the JSON string back to an object
-  var userData = JSON.parse(userDataJSON);
-
-  return userData;
 }
 
-var userData = retrieveUserData();
-console.log(userData);
+  </script>
   
-}
-</script>
 
 </body>
 </html>

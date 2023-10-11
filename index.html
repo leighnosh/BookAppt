@@ -54,6 +54,13 @@
   button:hover {
     background-color: #45a049;
   }
+
+  .appointment {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+  }
 </style>
 </head>
 <body>
@@ -83,6 +90,9 @@
     </div>
     <button type="submit">Submit</button>
   </form>
+  <div id="appointments">
+    <!-- This is where the list of appointments will be displayed -->
+  </div>
 </div>
 
 <script>
@@ -112,10 +122,56 @@ function saveUserData(event) {
   localStorage.setItem(email, JSON.stringify(existingData));
 
   alert('User data saved successfully!');
+
+  renderAppointments();
 }
 
-  </script>
-  
+function renderAppointments() {
+  var appointmentsDiv = document.getElementById('appointments');
+  appointmentsDiv.innerHTML = ''; // Clear the previous content
+
+  for (var i = 0; i < localStorage.length; i++) {
+    var email = localStorage.key(i);
+    var data = JSON.parse(localStorage.getItem(email));
+
+    data.forEach(function(appointment, index) {
+      var appointmentDiv = document.createElement('div');
+      appointmentDiv.className = 'appointment';
+      appointmentDiv.innerHTML = `
+        <p>Name: ${appointment.name}</p>
+        <p>Email: ${appointment.email}</p>
+        <p>Phone: ${appointment.phone}</p>
+        <p>Date: ${appointment.date}</p>
+        <p>Time: ${appointment.time}</p>
+        <button onclick="deleteAppointment('${email}', ${index})">Delete</button>
+      `;
+
+      appointmentsDiv.appendChild(appointmentDiv);
+    });
+  }
+}
+
+function deleteAppointment(email, index) {
+  var existingData = JSON.parse(localStorage.getItem(email)) || [];
+  existingData.splice(index, 1);
+
+  // Update local storage with the modified data
+  if (existingData.length > 0) {
+    localStorage.setItem(email, JSON.stringify(existingData));
+  } else {
+    // If there are no appointments left, remove the key from local storage
+    localStorage.removeItem(email);
+  }
+
+  renderAppointments();
+}
+
+
+// Initial render when the page loads
+renderAppointments();
+
+
+</script>
 
 </body>
 </html>

@@ -16,12 +16,66 @@ function postUserData(event) {
     axios.post(apiUrl, userData)
         .then(function(response) {
             alert('User data saved successfully!');
-            getAppointments();
+            getUserData();
         })
         .catch(function(error) {
             console.error('Error saving user data:', error);
         });
 }
+
+function editAppointment(id, index) {
+    axios.get(`${apiUrl}/${id}`)
+        .then(function(response) {
+            var user = response.data;
+            document.getElementById('name').value = user.name;
+            document.getElementById('email').value = user.email;
+            document.getElementById('phone').value = user.phone;
+
+            var userForm = document.getElementById('userForm');
+            userForm.onsubmit = function(event) {
+                event.preventDefault();
+                updateUserData(id);
+            };
+        })
+        .catch(function(error) {
+            console.error('Error fetching user details for editing:', error);
+        });
+}
+
+function updateUserData(id) {
+    var name = document.getElementById('name').value;
+    var email = document.getElementById('email').value;
+    var phone = document.getElementById('phone').value;
+
+    var userData = {
+        name: name,
+        email: email,
+        phone: phone,
+    };
+
+    axios.put(`${apiUrl}/${id}`, userData)
+        .then(function(response) {
+            alert('User data updated successfully!');
+            getUserData();
+        })
+        .catch(function(error) {
+            console.error('Error updating user data:', error);
+        });
+}
+
+function deleteAppointment(id, index) {
+    axios.delete(`${apiUrl}/${id}`)
+        .then(function(response) {
+            alert('User data deleted successfully!');
+            var appointmentsDiv = document.getElementById('appointments');
+            var appointmentToRemove = appointmentsDiv.getElementsByClassName('appointment')[index];
+            appointmentToRemove.parentNode.removeChild(appointmentToRemove);
+        })
+        .catch(function(error) {
+            console.error('Error deleting appointment:', error);
+        });
+}
+
 
 function getUserData() {
     var appointmentsDiv = document.getElementById('appointments');
@@ -49,19 +103,5 @@ function getUserData() {
         })
         .catch(function(error) {
             console.error('Error fetching appointments:', error);
-        });
-}
-
-
-function deleteAppointment(id, index) {
-    axios.delete(`${apiUrl}/${id}`)
-        .then(function(response) {
-            alert('User data deleted successfully!');
-            var appointmentsDiv = document.getElementById('appointments');
-            var appointmentToRemove = appointmentsDiv.getElementsByClassName('appointment')[index];
-            appointmentsDiv.removeChild(appointmentToRemove);
-        })
-        .catch(function(error) {
-            console.error('Error deleting appointment:', error);
         });
 }

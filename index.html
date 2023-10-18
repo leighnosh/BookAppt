@@ -1,194 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Appointment Form</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background-image: url('https://tinyurl.com/4v7c6b39'); 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    margin: 0;
-    padding: 0;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Form</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-  .container {
-    max-width: 500px;
-    margin: 100px auto;
-    background: rgba(255, 255, 255, 0.8);
-    padding: 20px;
-    border-radius: 10px;
-  }
-
-  .form-group {
-    margin-bottom: 20px;
-  }
-
-  label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-
-  input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-
-  button {
-    padding: 10px 20px;
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-
-  button:hover {
-    background-color: #45a049;
-  }
-
-  .appointment {
-    background-color: #f9f9f9;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
-  }
-  
-  button.edit {
-    background-color: #2196F3;
-    margin-right: 5px;
-  }
-</style>
 </head>
 <body>
 
 <div class="container">
-  <h1>Appointment</h1>
-  <form onsubmit="saveUserData(event)">
-    <div class="form-group">
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required>
+    <h1>Appointment</h1>
+    <form onsubmit="saveUserData(event)">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" required>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="appointments">
     </div>
-    <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required>
-    </div>
-    <div class="form-group">
-      <label for="phone">Phone Number:</label>
-      <input type="tel" id="phone" name="phone" required>
-    </div>
-    <div class="form-group">
-      <label for="date">Date:</label>
-      <input type="date" id="date" name="date" required>
-    </div>
-    <div class="form-group">
-      <label for="time">Time:</label>
-      <input type="time" id="time" name="time" required>
-    </div>
-    <button type="submit">Submit</button>
-  </form>
-  <div id="appointments">
-  </div>
 </div>
 
-<script>
-  function saveUserData(event) {
-    event.preventDefault();
-  
-    var email = document.getElementById('email').value;
-    var existingData = JSON.parse(localStorage.getItem(email)) || [];
-    var name = document.getElementById('name').value;
-    var phone = document.getElementById('phone').value;
-    var date = document.getElementById('date').value;
-    var time = document.getElementById('time').value;
-  
-    existingData.push({
-      name: name,
-      email: email,
-      phone: phone,
-      date: date,
-      time: time
-    });
-  
-    localStorage.setItem(email, JSON.stringify(existingData));
-  
-    alert('User data saved successfully!');
-  
-    renderAppointments();
-  }
-  
-  function editAppointment(email, index) {
-    var data = JSON.parse(localStorage.getItem(email));
-    var appointment = data[index];
-    
-    document.getElementById('name').value = appointment.name;
-    document.getElementById('phone').value = appointment.phone;
-    document.getElementById('date').value = appointment.date;
-    document.getElementById('time').value = appointment.time;
-  
-    // Remove the appointment from the list
-    data.splice(index, 1);
-  
-    // Update local storage with the modified data
-    if (data.length > 0) {
-      localStorage.setItem(email, JSON.stringify(data));
-    } else {
-      // If there are no appointments left, remove the key from local storage
-      localStorage.removeItem(email);
-    }
-  
-    renderAppointments();
-  }
-  
-  function renderAppointments() {
-    var appointmentsDiv = document.getElementById('appointments');
-    appointmentsDiv.innerHTML = '';
-  
-    for (var i = 0; i < localStorage.length; i++) {
-      var email = localStorage.key(i);
-      var data = JSON.parse(localStorage.getItem(email));
-  
-      data.forEach(function(appointment, index) {
-        var appointmentDiv = document.createElement('div');
-        appointmentDiv.className = 'appointment';
-        appointmentDiv.innerHTML = `
-          <p>Name: ${appointment.name}</p>
-          <p>Email: ${appointment.email}</p>
-          <p>Phone: ${appointment.phone}</p>
-          <p>Date: ${appointment.date}</p>
-          <p>Time: ${appointment.time}</p>
-          <button onclick="editAppointment('${email}', ${index})">Edit</button>
-          <button onclick="deleteAppointment('${email}', ${index})">Delete</button>
-        `;
-  
-        appointmentsDiv.appendChild(appointmentDiv);
-      });
-    }
-  }
-  
-  function deleteAppointment(email, index) {
-    var existingData = JSON.parse(localStorage.getItem(email)) || [];
-    existingData.splice(index, 1);
-  
-    if (existingData.length > 0) {
-      localStorage.setItem(email, JSON.stringify(existingData));
-    } else {
-      localStorage.removeItem(email);
-    }
-  
-    renderAppointments();
-  }
-  
-  renderAppointments();
-  </script>
-  
-  </body>
-  </html>
+<script src="app.js"></script>
+</body>
+</html>

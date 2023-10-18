@@ -59,3 +59,7 @@ button.edit {
     background-color: #2196F3;
     margin-right: 5px;
 }
+
+.get-data-button {
+    float: right;
+}

@@ -1,26 +1,55 @@
-var apiUrl =
-  "https://crudcrud.com/api/83166bfd3f7a4145833199764bcf5460/Appointments";
+var apiUrl = 'https://crudcrud.com/api/8278302ba78743219d464cf16deabdbe/Appointments';
 
 function postUserData(event) {
-  event.preventDefault();
+    event.preventDefault();
 
-  var name = document.getElementById("name").value;
-  var email = document.getElementById("email").value;
-  var phone = document.getElementById("phone").value;
+    var name = document.getElementById('name').value;
+    var email = document.getElementById('email').value;
+    var phone = document.getElementById('phone').value;
 
-  var userData = {
-    name: name,
-    email: email,
-    phone: phone,
-  };
+    var userData = {
+        name: name,
+        email: email,
+        phone: phone,
+    };
 
-  axios
-    .post(apiUrl, userData)
-    .then(function (response) {
-      alert("User data saved successfully!");
-      renderAppointments();
-    })
-    .catch(function (error) {
-      console.error("Error saving user data:", error);
-    });
+    axios.post(apiUrl, userData)
+        .then(function(response) {
+            alert('User data saved successfully!');
+            getAppointments();
+        })
+        .catch(function(error) {
+            console.error('Error saving user data:', error);
+        });
+}
+
+
+
+function getUserData() {
+    var appointmentsDiv = document.getElementById('appointments');
+    appointmentsDiv.innerHTML = '';
+
+    axios.get(apiUrl)
+        .then(function(response) {
+            var data = response.data;
+
+            if (Array.isArray(data)) {
+                data.forEach(function(appointment, index) {
+                    var appointmentDiv = document.createElement('div');
+                    appointmentDiv.className = 'appointment';
+                    appointmentDiv.innerHTML = `
+                        <p>Name: ${appointment.name}</p>
+                        <p>Email: ${appointment.email}</p>
+                        <p>Phone: ${appointment.phone}</p>
+                        <button onclick="editAppointment('${appointment.email}', ${index})">Edit</button>
+                        <button onclick="deleteAppointment('${appointment.email}', ${index})">Delete</button>
+                    `;
+
+                    appointmentsDiv.appendChild(appointmentDiv);
+                });
+            }
+        })
+        .catch(function(error) {
+            console.error('Error fetching appointments:', error);
+        });
 }

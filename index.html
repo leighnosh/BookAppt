@@ -6,13 +6,12 @@
     <title>Appointment Form</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
 </head>
 <body>
 
 <div class="container">
     <h1>Appointment</h1>
-    <form onsubmit="saveUserData(event)">
+    <form onsubmit="postUserData(event)">
         <div class="form-group">
             <label for="name">Name:</label>
             <input type="text" id="name" name="name" required>
@@ -25,7 +24,10 @@
             <label for="phone">Phone Number:</label>
             <input type="tel" id="phone" name="phone" required>
         </div>
-        <button type="submit">Submit</button>
+        <div class="buttons">
+            <button type="submit">Submit</button>
+            <button type="button" onclick="getUserData()" class="get-data-button">Get Data</button>
+        </div>
     </form>
     <div id="appointments">
     </div>
